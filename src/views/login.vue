@@ -39,8 +39,9 @@ export default {
   methods: {
     handleSubmit() {
       this.$refs.loginForm.validate().then(result => {
-        console.log(result)
-        this.$router.push({ path: '/index' })
+        if (result) {
+          this.$router.push({ path: '/index' })
+        }
       })
     }
   }
