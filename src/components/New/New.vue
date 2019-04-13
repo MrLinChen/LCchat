@@ -6,8 +6,8 @@
           <mu-list>
             <template v-for="i in num" >
               <!--eslint-disable-next-line-->
-              <mu-list-item>
-                <div style="width: 100%;">
+              <mu-list-item >
+                <div style="width: 100%;" @click="toChatPage">
                   <div style="display: inline-block;padding-top: 5px;">
                     <mu-avatar size="45">
                       <img src="../../assets/logo.png">
@@ -65,6 +65,10 @@ export default {
         this.loading = false
         this.num += 10
       }, 2000)
+    },
+    toChatPage() {
+      console.log(999999)
+      this.$router.push({ path: '/chat' })
     }
   }
 }

@@ -15,7 +15,7 @@
             <div v-show="pullDownRefresh" style="width: 30px;margin-left: auto;margin-right: auto">
               <mt-spinner type="snake" color="#26a2ff"/>
             </div>
-            <new v-if="selected == title[0]"  ref="load"/>
+            <new @click="index" v-if="selected == title[0]"  ref="load"/>
             <div v-show="pullingUp" color="#26a2ff" style="width: 30px;margin-left: auto;margin-right: auto;margin-bottom: 30px;">
               <mt-spinner type="snake" color="#26a2ff" />
             </div>
@@ -82,7 +82,7 @@ export default {
       title: ['消息', '联系人', '发现', '我'],
       selected: '消息',
       clientHeight: document.documentElement.clientHeight, // 页面高度
-      containerHeight: 0,
+      containerHeight: 0, // 内容体高度
       scroll: null,
       pullDownRefresh: false,
       pullingUp: false
@@ -131,6 +131,9 @@ export default {
         })
         // this.scroll.refresh()
       }
+    },
+    index() {
+      console.log(888)
     },
     computeHeight() {
       let headerHeight = this.$refs.header.children[0].clientHeight
