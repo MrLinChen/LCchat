@@ -12,10 +12,22 @@
         <!-- tab-container -->
         <mt-tab-container  v-model="selected">
           <mt-tab-container-item :id="title[0]">
-            <new v-if="selected == title[0]" />
+            <div v-show="pullDownRefresh" style="width: 30px;margin-left: auto;margin-right: auto">
+              <mt-spinner type="snake" color="#26a2ff"/>
+            </div>
+            <new v-if="selected == title[0]"  ref="load"/>
+            <div v-show="pullingUp" color="#26a2ff" style="width: 30px;margin-left: auto;margin-right: auto;margin-bottom: 30px;">
+              <mt-spinner type="snake" color="#26a2ff" />
+            </div>
           </mt-tab-container-item>
           <mt-tab-container-item :id=title[1]>
+            <div v-show="pullDownRefresh" style="width: 30px;margin-left: auto;margin-right: auto">
+              <mt-spinner type="snake" color="#26a2ff"/>
+            </div>
             <relation-people v-if="selected == title[1]" />
+            <div v-show="pullingUp" color="#26a2ff" style="width: 30px;margin-left: auto;margin-right: auto;margin-bottom: 30px;">
+              <mt-spinner type="snake" color="#26a2ff" />
+            </div>
           </mt-tab-container-item>
           <mt-tab-container-item :id=title[2]>
             <explore v-if="selected == title[2]"/>
@@ -23,6 +35,7 @@
           <mt-tab-container-item :id="title[3]">
             <my-center v-if="selected == title[3]" />
           </mt-tab-container-item>
+          <div>记载中。。。。。</div>
         </mt-tab-container>
       </div>
       <div ref="bottom" class="bottom">
@@ -70,7 +83,9 @@ export default {
       selected: '消息',
       clientHeight: document.documentElement.clientHeight, // 页面高度
       containerHeight: 0,
-      scroll: null
+      scroll: null,
+      pullDownRefresh: false,
+      pullingUp: false
     }
   },
   mounted() {
@@ -83,15 +98,39 @@ export default {
       if (this.scroll == null) {
         this.scroll = new BScroll('#scroll', {
           scrollY: true,
-          click: true
+          click: true,
+          pullDownRefresh: {
+            threshold: 30, // 刷新时机
+            stop: 30
+          },
+          pullUpLoad: {
+            threshold: 30 // 开始加载的时机
+          }
         })
+        this.scroll.on('pullingDown', () => {
+          console.log('下拉刷新......')
+          this.pullDownRefresh = true
+          setTimeout(() => {
+            this.pullDownRefresh = false
+            this.scroll.finishPullDown()
+          }, 3000)
+          this.scroll.refresh()
+          // 刷新scroll让它还原到原来的位置
+        })
+        this.scroll.on('pullingUp', () => {
+          console.log('上拉加载......')
+          this.pullingUp = true
+          setTimeout(() => {
+            console.log(this.$refs.load)
+            this.$refs.load.loadingData()
+            this.pullingUp = false
+            this.scroll.finishPullUp()
+          }, 3000)
+          this.scroll.refresh()
+          // this.scroll.finishPullUp() // 刷新scroll让它还原到原来的位置
+        })
+        // this.scroll.refresh()
       }
-      this.scroll.on('touchend', (pos) => {
-        console.log(pos)
-        if (pos.y > 50) {
-          console.log('下拉加载......')
-        }
-      })
     },
     computeHeight() {
       let headerHeight = this.$refs.header.children[0].clientHeight

@@ -47,6 +47,9 @@ export default {
     }
   },
   methods: {
+    loadingData() {
+      this.num += 10
+    },
     refresh () {
       this.refreshing = true
       this.$refs.container.scrollTop = 0
